@@ -20,3 +20,15 @@ In order to get this effect I made a few changes in the group's original code to
 ## THOUGHTS
 
 This artwork reminds me of Feudal Japan and the tree looks like a cherry blossom and this was the reason behind choosing this music. The key press functionality lacks the user interface and the user wouldn't exactly know how to interact with the artwork unless they read the code first and that is something I plan to work on in the next commit.
+
+
+
+
+
+# COMMIT 2
+
+In this commit I haven't changed a lot apart from adding the playmusic button and getting rid of the press spacebar function to play the music to make the design more user friendly.
+
+# **Future Changes**
+
+I will try to play around the code a little more and see what I can achieve, I dont want to change the music as it fits the scene.

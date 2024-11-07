@@ -8,15 +8,30 @@ let riverCircles = [];
 //empty variable for the song
 let song;
 
-//function for song
+//added variable for the button
+let playButton;
+
 function preload() {
-  song = loadSound('assets/RUDE - Eternal Youth.mp3');
+  song = loadSound('assets/RUDE - Eternal Youth.mp3');//License: Creative Common License
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);//changed the canvas size to get a more dynamic feel
   angleMode(DEGREES);
   noLoop();// Prevent continuous looping
+
+  //made the playmusic button 
+  playButton = createButton('Play Music');
+  playButton.position(10, 10);
+  playButton.mousePressed(() => {
+    if (song.isPlaying()) {
+      song.pause();
+      noLoop();
+    } else {
+      song.loop();
+      loop();
+    }
+  });
 
   // Initialize circles for the river
   for (let j = 0; j < 60; j++) { // Loop through 6 rows of circles
@@ -32,7 +47,6 @@ function setup() {
 
       let y = baseY + yOffset + rowOffset + downwardSlope; // Combine all for a flowing shape
 
-
       let circleSize = random(20, 70);
       let blueShade = color(random(0, 100), random(100, 200), random(200, 255));
       riverCircles.push(new Circle(x, y, circleSize, blueShade));
@@ -40,10 +54,7 @@ function setup() {
   }
 }
 
-
-
 function draw() {
-
   // Draw the Sky element
   drawGradientSky();
   drawCelestialBodies();
@@ -72,7 +83,6 @@ function draw() {
       circle.y += circle.vy;//similarly this controls the movement in y axis
     }
 
-
     // Draw the circle
     fill(circle.color);
     stroke(255);
@@ -90,21 +100,6 @@ function draw() {
   drawTree(width / 1.6, height * 0.7, -90, 9);
 }
 
-
-
-
-function keyPressed() {
-  if (keyCode === 32) { // learnt the keycode for spacebar in JS from https://www.toptal.com/developers/keycode/space
-    if (song.isPlaying()) {
-      song.pause();
-      noLoop();
-    } else {
-      song.loop();
-      loop();
-    }
-  }
-}
-
 // Create a function to draw the Grass element using cylinders
 function drawGrass() {
   for (let y = 0; y < cylinderRows; y++) {// Loop through the rows of cylinders
@@ -119,7 +114,6 @@ function drawGrass() {
     }
   }
 }
-
 
 // Create a function to draw a cylinder to be used in the Grass element
 function drawCylinder(x, y, topHeight) {
@@ -181,7 +175,6 @@ function drawSpiral(circle) {
   angleMode(DEGREES);
 }
 
-
 function drawInnerCircles(circle) {
   let numInnerCircles = Math.round(random(3, 6));
 
@@ -218,7 +211,6 @@ function drawTree(x, y, angle, number) {
   }
 }
 
-
 function drawTreeCircles(x, y, number) {
   noFill();
   for (let i = 0; i < number * 1; i++) {
@@ -237,7 +229,6 @@ function drawTreeCircles(x, y, number) {
     circle(x + xOffset, y + yOffset, 5);
   }
 }
-
 
 function drawGradientSky() {
   for (let y = 0; y <= height; y++) {
@@ -274,8 +265,6 @@ function drawCelestialBodies() {
     pop();
   }
 }
-
-
 
 function drawStars() {
   noStroke();
