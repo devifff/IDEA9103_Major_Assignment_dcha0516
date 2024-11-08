@@ -8,16 +8,17 @@ let riverCircles = [];
 //empty variable for the song
 let song;
 
-// ADD VARIABLES FOR CUSTOM PLAY AND PAUSE BUTTONS
+
 let buttonRadius = 30; // Radius for both buttons
 let playButtonX, playButtonY; // Position for play button
 let pauseButtonX, pauseButtonY; // Position for pause button
 let showPlayButton = true; // To toggle between play and pause buttons
 
-// ADD COLOR VARIABLES FOR GRADUAL COLOR CHANGE
+//needed to hardcode the value here to make sure the colour remains the same when the animation begins
+//as this variable can change the colour palette of the whole artwork
 let hueValue = 0;
 
-// ADD ARRAY FOR CHERRY BLOSSOM PETALS
+//array for cherry blossom
 let petals = [];
 
 function preload() {
@@ -29,10 +30,13 @@ function setup() {
   angleMode(DEGREES);
   noLoop();// Prevent continuous looping
 
-  // SET COLOR MODE TO HSB FOR EASIER COLOR MANIPULATION
-  colorMode(HSB, 360, 100, 100, 100);
+  /*have used colormode()in python before and then saw a video by TheBuffED src:-  https://www.youtube.com/watch?v=myWZUHvU6bg
+  and one by Courtney Morgan src:-  https://www.youtube.com/watch?v=lt1lDp2aFLQ
+  to understand how this would work in JavaScript
+  */
+  colorMode(HSB, 360, 100, 100);//values followed by HSB stands for hue, saturation and brighntess
 
-  // INITIALIZE POSITIONS FOR PLAY AND PAUSE BUTTONS
+  //pos for button
   playButtonX = 50;
   playButtonY = 50;
   pauseButtonX = 50;
@@ -58,16 +62,18 @@ function setup() {
     }
   }
 
-  // CREATE INITIAL PETALS FOR CHERRY BLOSSOM
+  /* this loop creates the falling cherry blossom leaves and it was important to keep it in setup in order to make this work
+  as if this was outside this function, the falling leaves would not work
+  */
   for (let i = 0; i < 200; i++) {
     petals.push(new Petal());
   }
 }
 
 function draw() {
-  // UPDATE HUE VALUE WHEN THE SONG IS PLAYING
+  //the huevalue changes gradually when music plays
   if (song.isPlaying()) {
-    hueValue = (hueValue + 0.5) % 360; // Gradually change hue value
+    hueValue = (hueValue + 0.5) % 360;
   }
 
   // Draw the Sky element
@@ -115,11 +121,11 @@ function draw() {
   // Draw the tree
   drawTree(width / 1.6, height * 0.7, -90, 9);
 
-  // UPDATE AND DRAW CHERRY BLOSSOM PETALS WITHOUT USING update() AND display() METHODS
+  // this is to get the falling petals
   for (let i = 0; i < petals.length; i++) {
     let petal = petals[i];
 
-    // UPDATE PETAL POSITION
+    //switch case to get the pos of petals
     if (song.isPlaying()) {
       petal.y += petal.speed;
       petal.angle += petal.rotationSpeed;
@@ -129,24 +135,24 @@ function draw() {
       }
     }
 
-    // DRAW PETAL
+    //drawing the petal here
     push();
     translate(petal.x, petal.y);
     rotate(petal.angle);
-    fill(330, 50, 100, 80); // PINK COLOR FOR CHERRY BLOSSOM PETALS
+    fill(330, 50, 100);
     noStroke();
     ellipse(0, 0, petal.size * 1.2, petal.size);
     pop();
   }
 
-  // DRAW CUSTOM PLAY/PAUSE BUTTONS
+
   drawPlayPauseButton();
 }
 
 function mousePressed() {
-  // CHECK IF MOUSE IS OVER THE PLAY/PAUSE BUTTON
-  let a = dist(mouseX, mouseY, playButtonX, playButtonY);
-  if (a < buttonRadius) {
+  //to check the location of mouse
+  let mousLoc = dist(mouseX, mouseY, playButtonX, playButtonY);
+  if (mousLoc < buttonRadius) {
     if (song.isPlaying()) {
       song.pause();
       noLoop();
@@ -180,7 +186,7 @@ function drawCylinder(x, y, topHeight) {
   translate(x, y);// Place the cylinder at the specified origin (x,y)
 
   // Draw the side face of the cylinder
-  fill((hueValue + 100) % 360, 80, 60); // MODIFY COLOR TO USE HSB AND CHANGE WITH HUE VALUE
+  fill((hueValue + 100) % 360, 80, 60);
   strokeWeight(1);
   stroke(255);
 
@@ -194,7 +200,7 @@ function drawCylinder(x, y, topHeight) {
   vertex(-cylinderRadius, -topHeight);
   endShape(CLOSE);
   // Draw the top face of the cylinder as an ellipse at the new top height
-  fill((hueValue + 120) % 360, 90, 70); // MODIFY COLOR TO USE HSB AND CHANGE WITH HUE VALUE
+  fill((hueValue + 120) % 360, 90, 70);
   ellipse(0, -topHeight, cylinderRadius * 2, cylinderRadius * 0.8);
   pop();
 }
@@ -213,7 +219,7 @@ class Circle {
   }//got rid of the old code which had display and switch case as I couldn't make it work and failed to get the logic
 }
 
-// MODIFY PETAL CLASS TO REMOVE update() AND display() METHODS
+//petal class which basically is drawing the petals
 class Petal {
   constructor() {
     this.x = random(width);
@@ -273,25 +279,20 @@ function drawTree(x, y, angle, number) {
     let x2 = x + cos(currentAngle) * length;
     let y2 = y + sin(currentAngle) * length;
 
-    stroke(30, 100, 30); // DARK BROWN COLOR FOR TREE TRUNK IN HSB
-    strokeWeight(map(number, 0, 10, 1, 4)); // THICKNESS DECREASES WITH RECURSION DEPTH
+    stroke(30, 100, 30);
+    strokeWeight(3); //thickness of tree
     line(x, y, x2, y2);
 
-    // DRAW CHERRY BLOSSOMS ON THE TREE BRANCHES
-    if (number < 5) {
-      fill(330, 50, 100, 80); // PINK COLOR FOR CHERRY BLOSSOMS
-      noStroke();
-      ellipse(x2, y2, random(5, 15), random(5, 15));
-    }
+
+    //drawing them on tree
+    fill(330, 50, 100, 80);
+    noStroke();
+    ellipse(x2, y2, random(5, 15), random(5, 15));
+
 
     drawTree(x2, y2, currentAngle - random(15, 30), number - 1);
     drawTree(x2, y2, currentAngle + random(15, 30), number - 1);
   }
-}
-
-function drawTreeCircles(x, y, number) {
-  // REMOVE ORIGINAL TREE CIRCLES TO MAKE TREE LOOK MORE LIKE FEUDAL JAPAN
-  // NO LONGER DRAWING CIRCLES AROUND THE TREE
 }
 
 function drawGradientSky() {
@@ -305,7 +306,7 @@ function drawGradientSky() {
 
 function drawCelestialBodies() {
   noStroke();
-  let numBodies = 3; // REDUCE NUMBER TO SIMPLIFY SCENE
+  let numBodies = 3;
 
   for (let i = 0; i < numBodies; i++) {//loop to create the big yellow circles aka the celestial bodies
     let x = random(width);
@@ -338,25 +339,25 @@ function drawStars() {
   }
 }
 
-// ADD FUNCTION TO DRAW CUSTOM PLAY/PAUSE BUTTON
+//function to create the play-pause button
 function drawPlayPauseButton() {
   push();
   translate(playButtonX, playButtonY);
   if (showPlayButton) {
-    fill(120, 100, 100); // GREEN COLOR FOR PLAY BUTTON
+    fill(120, 100, 100); //green for play
   } else {
-    fill(0, 100, 100); // RED COLOR FOR PAUSE BUTTON
+    fill(0, 100, 100); //red for pause
   }
   noStroke();
   ellipse(0, 0, buttonRadius * 2);
 
-  // DRAW PLAY OR PAUSE SYMBOL
+  //icon for play pause
   fill(255);
   if (showPlayButton) {
-    // DRAW PLAY SYMBOL
+    //play icon
     triangle(-buttonRadius / 2, -buttonRadius / 2, -buttonRadius / 2, buttonRadius / 2, buttonRadius / 2, 0);
   } else {
-    // DRAW PAUSE SYMBOL
+    //pause icon
     rectMode(CENTER);
     rect(-buttonRadius / 4, 0, buttonRadius / 4, buttonRadius);
     rect(buttonRadius / 4, 0, buttonRadius / 4, buttonRadius);
